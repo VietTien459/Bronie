@@ -2,3 +2,4 @@
 config.json
 index-copy.json
 *.png
+node_modules
