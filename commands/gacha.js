@@ -10,7 +10,7 @@ const { MessageAttachment, MessageEmbed } = require('discord.js');
 
 const { joinImages } = require('join-images');
 
-const droplist_file = fs.readFileSync('./drop-list/expansion-supply.json');
+const droplist_file = fs.readFileSync('./data/drop-list/expansion-supply.json');
 
 const droplist = JSON.parse(droplist_file);
 
@@ -18,12 +18,17 @@ const droplist = JSON.parse(droplist_file);
 const supply_card_img = 'https://static.wikia.nocookie.net/honkaiimpact3_gamepedia_en/images/b/b7/Expansion_Supply_Card.png/revision/latest/scale-to-width-down/256?cb=20180610095310';
 const haxxor_bunny_img = 'https://cdnb.artstation.com/p/assets/covers/images/039/656/365/large/jung-a-yang-jung-a-yang-17.jpg?1626540911';
 
-function gen_drop_image(img_list) {
+function join_images(img_list) {
+	// const img1 = '';
+	// const img2 = ''; 
 	joinImages([img_list[0], img_list[1], img_list[2], img_list[3], img_list[4]], { direction: 'horizontal' }).then((img) => {
 		img.toFile('./top.png');
+		// joinImages([img , img]).then((img2) => {img2.toFile('./test.png')});
+		// img1 = img.toBuffer();
 	});
 	joinImages([img_list[5], img_list[6], img_list[7], img_list[8], img_list[9]], { direction: 'horizontal' }).then((img) => {
 		img.toFile('./bot.png');
+		// img2 = img.toBuffer();
 	});
 	setTimeout(function() {
 		joinImages(['./top.png', './bot.png'], { direction: 'vertical' }).then((img) => {
@@ -89,7 +94,7 @@ module.exports = new Command({
 
 		}
 		// PullRes.addFields({ name: '\u200B', value : '\u200B' });
-		gen_drop_image(imagelist);
+		join_images(imagelist);
 
 		setTimeout(function() {
 			const file = new MessageAttachment('../Bronie/full.png');
