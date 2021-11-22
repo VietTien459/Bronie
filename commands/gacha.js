@@ -1,30 +1,34 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-undef */
 /* eslint-disable no-inline-comments */
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const Command = require("../Structures/Command.js");
+
 const fs = require('fs');
 // const { resourceLimits } = require('worker_threads');
+
 const { MessageAttachment, MessageEmbed } = require('discord.js');
+
 const { joinImages } = require('join-images');
-// import drop rates and droptable
-// const droprates_file = fs.readFileSync('./drop-rate/expansion-supply.json');
-const droplist_file = fs.readFileSync('./drop-list/expansion-supply.json');
-// const droprates = JSON.parse(droprates_file);
+
+const droplist_file = fs.readFileSync('./data/drop-list/expansion-supply.json');
+
 const droplist = JSON.parse(droplist_file);
 
-
-// imgae assets
+// image assets
 const supply_card_img = 'https://static.wikia.nocookie.net/honkaiimpact3_gamepedia_en/images/b/b7/Expansion_Supply_Card.png/revision/latest/scale-to-width-down/256?cb=20180610095310';
 const haxxor_bunny_img = 'https://cdnb.artstation.com/p/assets/covers/images/039/656/365/large/jung-a-yang-jung-a-yang-17.jpg?1626540911';
 
-const num_pulls = 10;
-
-function gen_drop_image(img_list) {
+function join_images(img_list) {
+	// const img1 = '';
+	// const img2 = ''; 
 	joinImages([img_list[0], img_list[1], img_list[2], img_list[3], img_list[4]], { direction: 'horizontal' }).then((img) => {
 		img.toFile('./top.png');
+		// joinImages([img , img]).then((img2) => {img2.toFile('./test.png')});
+		// img1 = img.toBuffer();
 	});
 	joinImages([img_list[5], img_list[6], img_list[7], img_list[8], img_list[9]], { direction: 'horizontal' }).then((img) => {
 		img.toFile('./bot.png');
+		// img2 = img.toBuffer();
 	});
 	setTimeout(function() {
 		joinImages(['./top.png', './bot.png'], { direction: 'vertical' }).then((img) => {
@@ -45,19 +49,18 @@ function weighted_random(items, weights) {
 			break;
 		}
 	}
-
 	return items[i];
 }
 
-module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('gacha')
-		.setDescription('Gacha Expansion Supply 10 rolls '),
-	async execute(interaction) {
+module.exports = new Command({
+	name: "gacha",
+	description: "Gacha Expansion Supply 10 rolls ",
+	async run(message, args, client) {
 		const items_list = [];
 		const items_rate = [];
 		const items_drop = [];
 		const imagelist = [];
+		const num_pulls = 10;
 		// Get droprates and items list from JSON
 		for (key in droplist) {
 			if (droplist.hasOwnProperty(key)) {
@@ -77,7 +80,7 @@ module.exports = {
 			.setColor('#0099ff')
 			.setTitle('Expansion Supply')
 			.setURL('https://www.youtube.com/watch?v=gYQYmikUtiM')
-			.setAuthor('Haxxor Bunny', haxxor_bunny_img, 'https://www.youtube.com/watch?v=hhGphFB3XoU')
+			.setAuthor('Haxxor Bunny', haxxor_bunny_img, 'https://github.com/VietTien459/Bronie')
 		// .setDescription('')
 			.setThumbnail(supply_card_img)
 			.setTimestamp()
@@ -91,13 +94,13 @@ module.exports = {
 
 		}
 		// PullRes.addFields({ name: '\u200B', value : '\u200B' });
-		gen_drop_image(imagelist);
+		join_images(imagelist);
 
 		setTimeout(function() {
 			const file = new MessageAttachment('../Bronie/full.png');
 			PullRes.setImage('attachment://full.png');
-			interaction.reply({ embeds: [PullRes], files: [file] });
+			message.reply({ embeds: [PullRes], files: [file] });
 		}, 1500);
 
 	},
-};
+});
