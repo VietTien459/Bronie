@@ -1,7 +1,4 @@
 const fs = require('fs');
-const lines_file = fs.readFileSync('./voice-line/voice-lines.json');
-const lines_json = JSON.parse(lines_file);
-const lines = lines_json.bridge;
 
 const Event = require("../Structures/Event.js");
 
