@@ -97,7 +97,5 @@ module.exports = new Command({
 
 		PullRes.setImage('attachment://gacha.png');
 		message.reply({ embeds: [PullRes], files: [attachment] });
-	
-
 	},
 });
